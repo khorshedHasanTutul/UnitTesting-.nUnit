@@ -4,6 +4,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Web.Http;
+using System.Web.Http.Results;
+using TestNinja.Server.Controllers;
 using TestNinja.Server.Services.AuthService;
 
 namespace TestNinja.UnitTest
@@ -45,6 +48,7 @@ namespace TestNinja.UnitTest
             var result = login.Login("tutul", "123456");
             Assert.That(result, Is.True); 
         }
+
         [Test]
         [TestCase("mehedi","123456")]
         [TestCase("tutul","")]
@@ -55,6 +59,20 @@ namespace TestNinja.UnitTest
             Assert.That(result, Is.False);
         }
 
+        [Test]
+        public void Login_TestResponseController_ReturnOk()
+        {
+            
+            var login = new Mock<IAuthService>();
+            login.Setup(l => l.Register("tutul", "123456")).Returns(true);
+
+            var controller = new AccountController(login.Object);
+
+            var result = controller.Register(new Server.DTOs.UserDto { UserName = "tutul", Password = "123456" });
+
+            Assert.That(result, Is.True);
+            
+        }
 
     }
 }
